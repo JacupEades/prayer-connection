@@ -3,4 +3,5 @@ export const COLORS = {
 	offWhite: "#f5f5f5",
 	black: "#000",
 	btnPrimary: "#0782F9",
+	danger: "#bb2124",
 };

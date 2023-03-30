@@ -7,25 +7,24 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import HeaderNav from "../components/navigation/HeaderNav";
-import GlobalStyles from "../GlobalStyles";
+import GlobalStyles from "../styles/GlobalStyles";
 import {
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
 	onAuthStateChanged,
+	signOut,
 } from "firebase/auth";
 import { auth } from "../firebase";
+import { StackActions } from "@react-navigation/native";
 
 export default function Login({ navigation }: any) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
 	useEffect(() => {
-		const unsubscribe = onAuthStateChanged(auth, (user) => {
-			if (user) {
-				navigation.replace("Home");
-			}
+		onAuthStateChanged(auth, (user) => {
+			!user ? null : navigation.navigate("Home");
 		});
-		return unsubscribe;
 	}, []);
 
 	const handleSignUp = () => {
@@ -47,9 +46,18 @@ export default function Login({ navigation }: any) {
 			.catch((error: { message: any }) => alert(error.message));
 	};
 
+	const handleSignOut = () => {
+		signOut(auth)
+			.then(() => {
+				navigation.replace("Login");
+			})
+			.catch((error: { message: any }) => alert(error.message));
+	};
+
 	return (
-		<KeyboardAvoidingView style={GlobalStyles.container} behavior="padding">
-			{/* <HeaderNav /> */}
+		<KeyboardAvoidingView
+			style={[GlobalStyles.container, GlobalStyles.loginContainer]}
+			behavior="padding">
 			<View style={GlobalStyles.inputContainer}>
 				<TextInput
 					placeholder="Email"
@@ -73,6 +81,11 @@ export default function Login({ navigation }: any) {
 					onPress={handleSignUp}
 					style={[GlobalStyles.button, GlobalStyles.buttonOutline]}>
 					<Text style={GlobalStyles.buttonOutlineText}>Register</Text>
+				</TouchableOpacity>
+				<TouchableOpacity
+					onPress={handleSignOut}
+					style={[GlobalStyles.button, GlobalStyles.buttonLogout]}>
+					<Text style={GlobalStyles.buttonText}>Logout</Text>
 				</TouchableOpacity>
 			</View>
 		</KeyboardAvoidingView>

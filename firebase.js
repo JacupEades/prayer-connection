@@ -22,5 +22,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const analytics = getAnalytics(app);
+const isLoggedIn = () => {
+	return firebase.auth().currentUser;
+};
 
-export { app, auth, analytics };
+export { app, auth, analytics, isLoggedIn };
